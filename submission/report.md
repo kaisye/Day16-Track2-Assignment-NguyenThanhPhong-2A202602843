@@ -10,7 +10,7 @@
 4. Trên tập test: AUC 0.9767, Accuracy 0.9994, F1 0.8242, Precision 0.8929, Recall 0.7653.
 5. Latency 1 dòng là 1.32 ms (median của 100 lần, sau 10 lần warm-up). Batch 1.000 dòng mất 3.29 ms, tức khoảng 303.788 dòng/giây (median của 10 lần).
 6. Trong lúc training, `python3` dùng 178% CPU và khoảng 494 MB RAM ([ảnh 02](screenshots/02_top_during_training.png)). Sau khi chạy xong, RAM dùng 492 Mi / 3.8 Gi và RX tích lũy khoảng 257 MB ([ảnh 04](screenshots/04_free_iplink_after_benchmark.png)). Biểu đồ trên Console ở [ảnh 05](screenshots/05_monitoring_cpu.png) và [ảnh 06](screenshots/06_monitoring_network.png).
-7. Billing ngày 02/10/2026 chưa cập nhật, vẫn hiển thị ₫0 ([ảnh 07](screenshots/07_billing_not_updated_yet.png)). Ước tính riêng khoảng $0.07 cho cả hai lần dựng hạ tầng.
+7. Billing ngày 02/10/2026 chưa cập nhật ([ảnh 07](screenshots/07_billing_not_updated_yet.png)). Đến 04/10/2026, Billing ghi nhận Compute Engine ₫720 (≈ $0.03) cho 02–03/10, được trừ hết vào credit nên số tiền phải trả là ₫0 ([ảnh 08](screenshots/08_billing_actual.png)). Ước tính riêng khoảng $0.07 cho cả hai lần dựng hạ tầng.
 8. Tôi đã tải kết quả về rồi xóa tài nguyên bằng `terraform destroy` lúc 17:58 (UTC+7) ngày 02/10/2026. Bằng chứng dọn dẹp: `terraform state list` trống, và `gcloud compute instances/disks/routers/forwarding-rules/addresses/backend-services list` đều trả về 0 mục (kiểm tra lại lúc ~22:45).
 
 ## Môi trường đo
@@ -96,7 +96,14 @@ Sau mỗi lần, toàn bộ tài nguyên đã xóa bằng `terraform destroy`. �
 
 ### Chi phí đã ghi nhận trên Billing
 
-Billing chưa cập nhật tại thời điểm 02/10/2026 ([ảnh 07](screenshots/07_billing_not_updated_yet.png): Billing → Reports, tháng hiện tại, group by Product, hiển thị ₫0). GCP có thể trễ hơn 24 giờ mới hiện chi phí. Sẽ chụp bổ sung ảnh Billing (lọc project `ai-infras-510409`, Last 7 days, group by Service/SKU) sau khi dữ liệu cập nhật. Nếu tài khoản đang dùng Free Trial, chi phí được trừ vào credit.
+- **02/10/2026:** Billing chưa cập nhật, vẫn hiển thị ₫0 ([ảnh 07](screenshots/07_billing_not_updated_yet.png)). GCP có thể trễ hơn 24 giờ mới hiện chi phí.
+- **04/10/2026:** Billing → Reports, khoảng thời gian 02–03/10/2026, group by Service ([ảnh 08](screenshots/08_billing_actual.png)):
+
+| Service | Usage cost | Other savings (credit) | Subtotal |
+|---|---|---|---|
+| Compute Engine | ₫720 (≈ $0.03) | -₫720 | ₫0 |
+
+Chi phí ghi nhận khoảng $0.03, thấp hơn mức ước tính ~$0.07. Có thể Billing chưa ghi đủ phí NAT xử lý dữ liệu và phí Load Balancer, hoặc ước tính của tôi hơi cao. Toàn bộ chi phí được trừ vào credit nên số tiền thực trả là ₫0.
 
 ## Nhận xét
 
